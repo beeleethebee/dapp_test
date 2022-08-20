@@ -7,15 +7,23 @@
     <div v-else>
 
       <p>{{ address }}</p>
-      <button @click="getHero">Choper le hero</button>
 
       <div v-if="Object.keys(hero).length === 0">
         <button @click="createHero">Créer le héro</button>
       </div>
 
       <div v-else>
-        <p>Nom du héro : {{ hero.name }}</p>
-        <p>Niveau du héro : {{ hero.level }}</p>
+        <p>Héro <i>{{ hero.name }}</i>, de niveau {{ hero.level }}</p>
+        <div>
+          <h4>Statistiques</h4>
+          <ul>
+            <li>Attaque: {{ hero.attack }}</li>
+            <li>Défense: {{ hero.defense }}</li>
+            <li>Rapidité: {{ hero.speed }}</li>
+            <li>Chance: {{ hero.luck }}</li>
+            <li>Points d'attributs à répartir : {{ hero.attributePoints }}</li>
+          </ul>
+        </div>
         <button @click="burnHero">Supprimer le hero</button>
       </div>
 
@@ -60,19 +68,27 @@ export default {
       store.commit('setAddress', address);
     },
     setHero(hero) {
-      const { name, attack, defense, speed, luck, level, wins } = hero
-      const params = name === undefined ? {} : { name, attack, defense, speed, luck, level, wins };
+      const { name, attack, defense, speed, luck, level, wins, attributePoints } = hero
+      const params = name === undefined ? {} : { name, attack, defense, speed, luck, level, wins, attributePoints };
       this.hero = params;
       console.log(this.hero);
       store.commit('setHero', params);
     },
     async burnHero() {
-      this.setHero({});
+      this.contract.methods.burnHero().send({ from: this.address })
+          .then((r) => {
+            console.log(r);
+            this.setHero({});
+          })
     },
     async createHero() {
       this.contract.methods.createHero().send({ from: this.address })
-          .then((r) => {
-            console.log(r);
+          .then(async () => {
+            await this.getHero();
+          })
+          .catch((e) => {
+            alert("Erreur à la création du héro")
+            console.log(e);
           })
     },
     async getHero() {
@@ -80,7 +96,7 @@ export default {
         .then((r) => {
           const { status, hero } = r;
           if (status === 'error') {
-            alert("Pas de héro trouvé")
+            this.setHero({})
           } else {
             console.log(hero);
             this.setHero(hero);
