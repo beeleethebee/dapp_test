@@ -4,14 +4,14 @@ pragma solidity >=0.4.22 <0.9.0;
 contract HeroContract {
     struct Hero {
         string name;
+        uint lifePoint;
+        uint wins;
         uint8 level;
         uint8 attack;
         uint8 defense;
         uint8 speed;
         uint8 luck;
         uint8 attributePoints;
-        uint16 lifePoint;
-        uint16 wins;
     }
     mapping(address => Hero) public heroes;
     uint8 internal constant MAX_ATTRIBUTE_POINTS = 50;

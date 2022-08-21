@@ -80,6 +80,9 @@ export default {
             console.log(r);
             this.setHero({});
           })
+          .catch((e) => {
+            console.log(e)
+          })
     },
     async createHero() {
       this.contract.methods.createHero().send({ from: this.address })
