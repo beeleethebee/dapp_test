@@ -7,31 +7,13 @@ contract PlayerContract is HeroContract {
 
   function incrementAttributes(uint8 _attack, uint8 _defense, uint8 _speed, uint8 _luck) public hasHero {
     uint8 sum = _attack + _defense + _speed + _luck;
-    Hero storage hero = heroes[msg.sender];
-    require(sum <= hero.attributePoints, "Not enough attribute points");
+    require(sum <= heroes[msg.sender].attributePoints, "Not enough attribute points");
     require(sum > 0, "No attribute points to increment");
-
-  if (hero.attack + _attack > MAX_ATTRIBUTE_POINTS) {
-      hero.attack = MAX_ATTRIBUTE_POINTS;
-    } else {
-        hero.attack += _attack;
-    }
-    if (hero.defense + _defense > MAX_ATTRIBUTE_POINTS) {
-      hero.defense = MAX_ATTRIBUTE_POINTS;
-    } else {
-      hero.defense += _defense;
-    }
-    if (hero.speed + _speed > MAX_ATTRIBUTE_POINTS) {
-      hero.speed = MAX_ATTRIBUTE_POINTS;
-    } else {
-      hero.speed += _speed;
-    }
-    if (hero.defense + _defense > MAX_ATTRIBUTE_POINTS) {
-      hero.defense = MAX_ATTRIBUTE_POINTS;
-    } else {
-      hero.defense += _defense;
-    }
-    hero.attributePoints -= sum;
+    heroes[msg.sender].attack += _attack;
+    heroes[msg.sender].defense += _defense;
+    heroes[msg.sender].speed += _speed;
+    heroes[msg.sender].defense += _defense;
+    heroes[msg.sender].attributePoints -= sum;
   }
 
   function getMyHero() external view returns (Hero memory hero, string memory status) {

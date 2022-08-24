@@ -59,7 +59,6 @@ export default {
         return;
       }
       this.attributePoints = this.attributePoints + diff;
-
       this.tempHero[`${name}Previous`] = this.tempHero[name];
       this.tempHero[name] = parseInt(value);
     }

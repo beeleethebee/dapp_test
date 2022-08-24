@@ -28,7 +28,7 @@
           <UpdateAttributes :hero="hero" :increment-attributes="incrementAttributes"/>
         </div>
         <button @click="burnHero">Supprimer le hero</button>
-        <button @click="getHero">gethero</button>
+        <button @click="getHero">refresh contract</button>
       </div>
 
     </div>
@@ -58,7 +58,6 @@ export default {
       await this.getHero();
     });
 
-    console.log(store.getters.hero)
     return {
       address: store.getters.address,
       hero: store.getters.hero,
@@ -91,7 +90,7 @@ export default {
           console.log(r);
           this.getHero();
         }).catch((e) => {
-          console.log(e);
+          console.log(e.stack)
         });
     },
     async burnHero() {
