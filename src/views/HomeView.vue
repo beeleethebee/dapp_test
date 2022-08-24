@@ -21,10 +21,14 @@
             <li>Défense: {{ hero.defense }}</li>
             <li>Rapidité: {{ hero.speed }}</li>
             <li>Chance: {{ hero.luck }}</li>
-            <li>Points d'attributs à répartir : {{ hero.attributePoints }}</li>
           </ul>
         </div>
+
+        <div v-if="parseInt(hero.attributePoints) > 0">
+          <UpdateAttributes :hero="hero" :increment-attributes="incrementAttributes"/>
+        </div>
         <button @click="burnHero">Supprimer le hero</button>
+        <button @click="getHero">gethero</button>
       </div>
 
     </div>
@@ -35,13 +39,16 @@
 
 import PlayerContract from "abi/PlayerContract.json";
 import store from "store";
+import UpdateAttributes from "@/components/UpdateAttributes.vue";
 
 export default {
 
   name: 'HomeView',
-  components: {
 
+  components: {
+    UpdateAttributes
   },
+
   data() {
     const { ethereum, Web3 } = window;
     const web3 = new Web3(Web3.givenProvider)
@@ -62,7 +69,6 @@ export default {
   },
 
   methods: {
-
     setAddress(address) {
       this.address = address;
       store.commit('setAddress', address);
@@ -73,6 +79,20 @@ export default {
       this.hero = params;
       console.log(this.hero);
       store.commit('setHero', params);
+    },
+    async incrementAttributes(newHero) {
+      this.contract.methods.incrementAttributes(
+          newHero.attack - parseInt(this.hero.attack),
+          newHero.defense - parseInt(this.hero.defense),
+          newHero.speed - parseInt(this.hero.speed),
+          newHero.luck - parseInt(this.hero.luck),
+      ).send({ from: this.address })
+       .then((r) => {
+          console.log(r);
+          this.getHero();
+        }).catch((e) => {
+          console.log(e);
+        });
     },
     async burnHero() {
       this.contract.methods.burnHero().send({ from: this.address })
