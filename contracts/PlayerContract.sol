@@ -9,10 +9,18 @@ contract PlayerContract is HeroContract {
     uint8 sum = _attack + _defense + _speed + _luck;
     require(sum <= heroes[msg.sender].attributePoints, "Not enough attribute points");
     require(sum > 0, "No attribute points to increment");
-    heroes[msg.sender].attack += _attack;
-    heroes[msg.sender].defense += _defense;
-    heroes[msg.sender].speed += _speed;
-    heroes[msg.sender].defense += _defense;
+    if (_attack > 0) {
+      heroes[msg.sender].attack += _attack;
+    }
+    if (_defense > 0) {
+      heroes[msg.sender].defense += _defense;
+    }
+    if (_speed > 0) {
+      heroes[msg.sender].speed += _speed;
+    }
+    if (_luck > 0) {
+      heroes[msg.sender].luck += _luck;
+    }
     heroes[msg.sender].attributePoints -= sum;
   }
 
