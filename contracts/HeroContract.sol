@@ -4,8 +4,8 @@ pragma solidity >=0.4.22 <0.9.0;
 contract HeroContract {
     struct Hero {
         string name;
-        uint lifePoint;
-        uint wins;
+        uint16 lifePoint;
+        uint16 wins;
         uint8 level;
         uint8 attack;
         uint8 defense;
@@ -13,8 +13,8 @@ contract HeroContract {
         uint8 luck;
         uint8 attributePoints;
     }
+
     mapping(address => Hero) public heroes;
-    uint8 internal constant MAX_ATTRIBUTE_POINTS = 50;
 
     modifier hasHero() {
         require(heroes[msg.sender].level > 0);
@@ -30,11 +30,11 @@ contract HeroContract {
         Hero memory newHero;
         newHero.name = "Hero";
         newHero.level = 1;
-        newHero.attack = 1;
-        newHero.defense = 1;
-        newHero.speed = 1;
-        newHero.luck = 1;
-        newHero.lifePoint = 100;
+        newHero.attack = 5;
+        newHero.defense = 5;
+        newHero.speed = 5;
+        newHero.luck = 5;
+        newHero.lifePoint = 30;
         newHero.wins = 0;
         newHero.attributePoints = 10;
         return newHero;

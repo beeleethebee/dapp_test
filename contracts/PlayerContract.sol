@@ -5,7 +5,7 @@ import "./HeroContract.sol";
 
 contract PlayerContract is HeroContract {
 
-  function incrementAttributes(uint8 _attack, uint8 _defense, uint8 _speed, uint8 _luck) public hasHero {
+  function incrementAttributes(uint8 _attack, uint8 _defense, uint8 _speed, uint8 _luck) external hasHero {
     uint8 sum = _attack + _defense + _speed + _luck;
     require(sum <= heroes[msg.sender].attributePoints, "Not enough attribute points");
     require(sum > 0, "No attribute points to increment");
@@ -16,9 +16,24 @@ contract PlayerContract is HeroContract {
     heroes[msg.sender].attributePoints -= sum;
   }
 
+  function updateName(string calldata _newName) payable external hasHero {
+    require(msg.value == 0.001 ether, "Not enough ether");
+    heroes[msg.sender].name = _newName;
+  }
+
   function getMyHero() external view returns (Hero memory hero, string memory status) {
     Hero memory senderHero = heroes[msg.sender];
-    if (senderHero.level != 0) {
+    if (senderHero.level > 0) {
+      hero = senderHero;
+      status = "success";
+    } else {
+      status = "error";
+    }
+  }
+
+  function getHero(address _address) external view returns (Hero memory hero, string memory status) {
+    Hero memory senderHero = heroes[_address];
+    if (senderHero.level > 0) {
       hero = senderHero;
       status = "success";
     } else {

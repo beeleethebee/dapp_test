@@ -27,6 +27,7 @@
         <div v-if="parseInt(hero.attributePoints) > 0">
           <UpdateAttributes :hero="hero" :increment-attributes="incrementAttributes"/>
         </div>
+        <UpdateName :hero-name="hero.name" :update-name="updateName"/>
         <button @click="burnHero">Supprimer le hero</button>
         <button @click="getHero">refresh contract</button>
       </div>
@@ -40,13 +41,14 @@
 import PlayerContract from "abi/PlayerContract.json";
 import store from "store";
 import UpdateAttributes from "@/components/UpdateAttributes.vue";
+import UpdateName from "@/components/UpdateName.vue";
 
 export default {
-
   name: 'HomeView',
 
   components: {
-    UpdateAttributes
+    UpdateAttributes,
+    UpdateName,
   },
 
   data() {
@@ -92,6 +94,20 @@ export default {
         }).catch((e) => {
           console.log(e.stack)
         });
+    },
+    async updateName(newName) {
+      if (newName === this.hero.name) {
+        return;
+      }
+      this.contract.methods.updateName(newName)
+          .send({ from: this.address, value: this.web3.utils.toWei('0.001', 'ether')})
+          .then((r) => {
+            console.log(r);
+            this.getHero();
+            return true;
+          }).catch((e) => {
+            console.log(e.stack)
+          });
     },
     async burnHero() {
       this.contract.methods.burnHero().send({ from: this.address })
